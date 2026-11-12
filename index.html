@@ -243,13 +243,14 @@ Make yourself at home. Poke around, get your fortune told, and put on my collage
 <figure style="margin:0;display:flex;flex-direction:column;align-items:center;gap:6px">
 <img src="{{ piece.thumb }}" alt="{{ piece.alt }}" loading="lazy" onClick="{{ piece.open }}" style="display:block;box-sizing:border-box;width:100%;aspect-ratio:4/5;object-fit:cover;border:1px solid #3d3a35;box-shadow:2px 2px 0 #3d3a35;cursor:zoom-in;background-color:#f4ead2">
 <span style="font-size:11px;text-align:center;line-height:1.3;max-width:100%">{{ piece.title }}</span>
-<button onClick="{{ piece.open }}" style="padding:3px 10px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;font-size:11px;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">view</button>
+<div style="display:flex;gap:6px"><button onClick="{{ piece.open }}" style="padding:3px 10px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;font-size:11px;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">view</button><a href="{{ piece.page }}" style="padding:3px 10px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:11px Tahoma;color:#111;text-decoration:none">details</a></div>
 </figure>
 </sc-for>
 </div>
 <sc-if value="{{ hasMoreArt }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;justify-content:center;padding:8px 4px 2px"><button onClick="{{ loadMoreArt }}" style="padding:5px 18px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">Load more</button></div>
 </sc-if>
+<div style="display:flex;justify-content:center;padding:8px 4px 2px"><a href="art/" style="padding:5px 18px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;color:#111;text-decoration:none">View all collages</a></div>
 <div style="display:flex;gap:4px;padding:4px;font-size:11px">
 <div style="flex:1;border:1px solid;border-color:#8a857c #fff #fff #8a857c;padding:2px 6px">{{ artCountLabel }}</div>
 <div style="border:1px solid;border-color:#8a857c #fff #fff #8a857c;padding:2px 6px">handmade</div>
@@ -406,7 +407,7 @@ Make yourself at home. Poke around, get your fortune told, and put on my collage
 <li><img src="art/mundane.jpg" alt="I Wanted To Do Mundane Things With You, 2025, analog collage by dmozus" width="300"></li>
 <li><img src="art/christmas-2024.jpg" alt="Christmas, 2024, analog collage by dmozus" width="300"></li>
 </ul>
-<p><a href="https://314shop.us">Shop at 314 Shop</a> · <a href="https://www.instagram.com/dmozus/">Instagram @dmozus</a> · <a href="https://www.youtube.com/@dmozus">YouTube</a></p>
+<p><a href="art/">View all collages</a> · <a href="https://314shop.us">Shop at 314 Shop</a> · <a href="https://www.instagram.com/dmozus/">Instagram @dmozus</a> · <a href="https://www.youtube.com/@dmozus">YouTube</a></p>
 </noscript>
 <script type="text/x-dc" data-dc-script data-props="{&quot;shopUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://314shop.us&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;spotifyUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://open.spotify.com/playlist/0foV08AXVTsGASPCGndC3l&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Messages&quot;},&quot;formEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://formspree.io/f/xnpngydj&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Messages&quot;},&quot;showFish&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
@@ -505,7 +506,7 @@ class Component extends DCLogic {
     try {
       const r = await fetch('art/list.json', { cache: 'no-store' });
       const list = await r.json();
-      this.setState({ art: list.map(a => ({ src: 'art/' + a.file, thumb: 'art/thumbs/' + a.file, title: a.title || a.file })) });
+      this.setState({ art: list.map(a => ({ file: a.file, src: 'art/' + a.file, thumb: 'art/thumbs/' + a.file, title: a.title || a.file })) });
     } catch (e) {}
   }
   openArt(a) {
@@ -610,7 +611,7 @@ class Component extends DCLogic {
       onQuestion: e => this.setState({ question: e.target.value }),
       onKey: e => { if (e.key === 'Enter') this.ask(); },
       ask: this.ask,
-      artPieces: this.state.art.slice(0, this.state.artShown).map(a => ({ ...a, alt: a.title + ', analog collage by dmozus', open: () => this.openArt(a) })),
+      artPieces: this.state.art.slice(0, this.state.artShown).map(a => ({ ...a, alt: a.title + ', analog collage by dmozus', page: 'art/' + a.file.replace(/\.[^.]+$/, '') + '/', open: () => this.openArt(a) })),
       updates: (this.state.showAllUpdates ? this.state.updates : this.state.updates.slice(0, 4)).map(u => { const d = new Date(u.date + 'T12:00:00'); return { text: u.text, dateLabel: isNaN(d) ? u.date : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }; }),
       hasMoreUpdates: this.state.updates.length > 4,
       updatesToggleLabel: this.state.showAllUpdates ? 'Show fewer' : 'See all updates',
