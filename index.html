@@ -324,7 +324,7 @@ Make yourself at home. Look through my collages, catch up on my recent updates, 
 <div onClick="{{ stop }}" style="max-width:100%;max-height:100%;display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:3px 3px 0 #000;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>{{ lightboxTitle }}</span><button onClick="{{ closeLightbox }}" style="width:18px;height:16px;padding:0;background:#d6d0c4;color:#000;font:bold 11px/12px Tahoma;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff;cursor:pointer">×</button></div>
 <div style="margin-top:3px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;display:flex;align-items:flex-start;justify-content:flex-start;max-width:calc(100vw - 66px);max-height:calc(100vh - 104px);overflow:auto">
-<div onClick="{{ toggleZoom }}" style="position:relative;display:flex;flex:none;margin:auto;cursor:{{ zoomCursor }}">{{ lightboxImg }}<span style="position:absolute;right:10px;top:8px;font:300 11px/1 Tahoma,sans-serif;letter-spacing:.5px;color:rgba(255,255,255,.4);text-shadow:0 0 2px rgba(0,0,0,.25);pointer-events:none;user-select:none">© dmozus</span></div>
+<div onClick="{{ toggleZoom }}" style="position:relative;display:flex;flex:none;margin:auto;cursor:{{ zoomCursor }}">{{ lightboxImg }}</div>
 <sc-if value="{{ lightboxEmpty }}" hint-placeholder-val="{{ false }}"><span style="font:12px Tahoma;padding:20px">No image here yet — drop a collage into this frame first.</span></sc-if>
 </div>
 </div>
