@@ -71,7 +71,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </a>
 </nav>
 
-<div style="flex:1 1 600px;min-width:0;display:flex;flex-direction:column;gap:20px">
+<div style="flex:1 1 600px;min-width:0;contain:inline-size;display:flex;flex-direction:column;gap:20px">
 
 <div style="display:flex;flex-wrap:wrap;flex-direction:{{ rowDir }};gap:20px;align-items:{{ rowAlign }}">
 
@@ -126,8 +126,8 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 <div style="padding:10px;display:flex;flex-direction:column;gap:10px">
 <div style="background:#050805;border:2px solid;border-color:#8a857c #fff #fff #8a857c;padding:10px 12px;font-family:'VT323',monospace;color:#7cff6b;text-shadow:0 0 4px rgba(124,255,107,.6)">
 <div style="display:flex;justify-content:space-between;font-size:16px"><span>{{ statusLabel }}</span><span>{{ elapsed }} / {{ totalLabel }}</span></div>
-<div style="font-size:24px;line-height:1.1;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ current.title }}</div>
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px"><span style="font-size:18px;color:#4fbf45;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ current.artist }}</span><span style="display:flex;align-items:flex-end;gap:2px;height:14px;flex:none"><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.1s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.55s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.3s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.8s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.45s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.2s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.65s"></span></span></div>
+<div style="display:flex;margin-top:4px"><span style="flex:1 1 0;width:0;min-width:0;font-size:24px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ current.title }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px"><span style="flex:1 1 0;width:0;font-size:18px;color:#4fbf45;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ current.artist }}</span><span style="display:flex;align-items:flex-end;gap:2px;height:14px;flex:none"><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.1s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.55s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.3s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.8s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.45s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.2s"></span><span style="width:3px;height:14px;background:#7cff6b;transform-origin:bottom;transform:scaleY(.2);animation:{{ eqAnim }};animation-delay:-.65s"></span></span></div>
 <div onClick="{{ seekTo }}" style="margin-top:8px;height:10px;border:1px solid #2e6b28;padding:1px;cursor:pointer">
 <div style="height:100%;width:{{ progressPct }};background:repeating-linear-gradient(90deg,#7cff6b 0 6px,transparent 6px 8px);pointer-events:none"></div>
 </div>
@@ -141,7 +141,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 <sc-for list="{{ trackRows }}" as="row" hint-placeholder-count="6">
 <div onClick="{{ row.select }}" style="display:flex;gap:8px;padding:5px 8px;font-size:12px;cursor:pointer;background:{{ row.bg }};color:{{ row.color }}">
 <span style="width:18px;flex:none">{{ row.num }}.</span>
-<span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.title }} — {{ row.artist }}</span>
+<span style="flex:1 1 0;width:0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.title }} — {{ row.artist }}</span>
 <span>{{ row.durLabel }}</span>
 </div>
 </sc-for>
@@ -163,7 +163,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 <div style="display:flex;gap:6px;width:100%">
-<input value="{{ question }}" onChange="{{ onQuestion }}" onKeyDown="{{ onKey }}" placeholder="Will my next collage slap?" style="flex:1;min-width:0;padding:6px 8px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:12px Tahoma;outline:none">
+<input value="{{ question }}" onChange="{{ onQuestion }}" onKeyDown="{{ onKey }}" placeholder="Will my next collage slap?" style="flex:1;min-width:0;padding:6px 8px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:{{ fieldFont }};outline:none">
 <button onClick="{{ ask }}" style="padding:0 16px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:bold 12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">Ask</button>
 </div>
 <div style="font-size:11px;color:#3d3a35">type a question, then click the ball</div>
@@ -303,8 +303,8 @@ Make yourself at home. Poke around, get your fortune told, and put on my collage
 <div style="font:13px/1.45 Tahoma;color:#2b2b2b">Questions, commissions, trades or just saying hi — this goes straight to me and stays private.</div>
 <div style="display:grid;grid-template-columns:48px minmax(0,1fr);gap:6px 8px;align-items:center">
 <span>To:</span><div style="padding:4px 6px;background:#ece9e2;border:2px solid;border-color:#8a857c #fff #fff #8a857c;color:#3d3a35">dmozus (private)</div>
-<span>Name:</span><input value="{{ msgName }}" onChange="{{ onMsgName }}" style="padding:5px 6px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:12px Tahoma;outline:none;min-width:0">
-<span>Email:</span><input type="email" value="{{ msgEmail }}" onChange="{{ onMsgEmail }}" placeholder="so i can write back" style="padding:5px 6px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:12px Tahoma;outline:none;min-width:0">
+<span>Name:</span><input value="{{ msgName }}" onChange="{{ onMsgName }}" style="padding:5px 6px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:{{ fieldFont }};outline:none;min-width:0">
+<span>Email:</span><input type="email" value="{{ msgEmail }}" onChange="{{ onMsgEmail }}" placeholder="so i can write back" style="padding:5px 6px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:{{ fieldFont }};outline:none;min-width:0">
 </div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
@@ -312,7 +312,7 @@ Make yourself at home. Poke around, get your fortune told, and put on my collage
 <button onClick="{{ sendMsg }}" style="padding:6px 22px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:bold 12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">Send</button>
 </div>
 </div>
-<textarea value="{{ msgBody }}" onChange="{{ onMsgBody }}" placeholder="say hi, ask about a piece, trade vintage finds…" rows="8" style="flex:2 1 320px;min-height:170px;box-sizing:border-box;padding:8px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:13px/1.5 'Courier New',monospace;outline:none;resize:vertical"></textarea>
+<textarea value="{{ msgBody }}" onChange="{{ onMsgBody }}" placeholder="say hi, ask about a piece, trade vintage finds…" rows="8" style="flex:2 1 320px;min-height:170px;box-sizing:border-box;padding:8px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:{{ areaFont }};outline:none;resize:vertical"></textarea>
 </div>
 </sc-if>
 </div>
@@ -649,6 +649,8 @@ class Component extends DCLogic {
       stop: e => e.stopPropagation(),
       rowDir: narrow ? 'column' : 'row',
       fillFlex: narrow ? 'none' : '1',
+      fieldFont: narrow ? '16px Tahoma' : '12px Tahoma',
+      areaFont: narrow ? "16px/1.4 'Courier New',monospace" : "13px/1.5 'Courier New',monospace",
       msgFlex: narrow ? 'none' : '1 1 100%',
       artCols: narrow ? 'repeat(2,minmax(0,1fr))' : 'repeat(auto-fill,minmax(140px,1fr))',
       artPad: narrow ? '10px' : '14px',
