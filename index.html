@@ -182,6 +182,12 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 <div style="font:11px Tahoma;color:#3d3a35;min-height:14px">{{ luckyNumbers }}</div>
 <button onClick="{{ crackCookie }}" style="padding:5px 16px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;font-weight:bold;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">{{ cookieLabel }}</button>
+<sc-if value="{{ cracked }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">
+<sc-if value="{{ canShare }}" hint-placeholder-val="{{ false }}"><button onClick="{{ shareFortune }}" style="padding:5px 12px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">Share my fortune</button></sc-if>
+<button onClick="{{ saveFortune }}" style="padding:5px 12px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">Save as image</button>
+</div>
+</sc-if>
 </div>
 </div>
 
@@ -509,6 +515,65 @@ class Component extends DCLogic {
       this.setState({ art: list.map(a => ({ file: a.file, src: 'art/' + a.file, thumb: 'art/thumbs/' + a.file, title: a.title || a.file })) });
     } catch (e) {}
   }
+  async fortuneBlob() {
+    const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    try { await Promise.all([document.fonts.load("96px 'Alfa Slab One'"), document.fonts.load("40px 'Bungee'")]); } catch (e) {}
+    const bevel = (x, y, w, h, t, light, dark, fill) => { g.fillStyle = fill; g.fillRect(x, y, w, h); g.fillStyle = light; g.fillRect(x, y, w, t); g.fillRect(x, y, t, h); g.fillStyle = dark; g.fillRect(x, y + h - t, w, t); g.fillRect(x + w - t, y, t, h); };
+    // desktop
+    g.fillStyle = '#1c7676'; g.fillRect(0, 0, W, H);
+    g.fillStyle = 'rgba(0,0,0,.16)'; for (let x = 0; x < W; x += 180) g.fillRect(x, 0, 3, H); for (let y = 0; y < H; y += 180) g.fillRect(0, y, W, 3);
+    // window
+    const wx = 90, wy = 150, ww = 900, wh = 900;
+    g.fillStyle = '#000'; g.fillRect(wx + 8, wy + 8, ww, wh);
+    bevel(wx, wy, ww, wh, 4, '#f4f1ea', '#3d3a35', '#d6d0c4');
+    const tb = g.createLinearGradient(wx, 0, wx + ww, 0); tb.addColorStop(0, '#0b2a6f'); tb.addColorStop(1, '#6d95c9');
+    g.fillStyle = tb; g.fillRect(wx + 10, wy + 10, ww - 20, 58);
+    g.fillStyle = '#fff'; g.font = 'bold 34px Tahoma, Verdana, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'left'; g.fillText('fortune_cookie.exe', wx + 28, wy + 40);
+    bevel(wx + ww - 62, wy + 20, 42, 38, 2, '#fff', '#3d3a35', '#d6d0c4'); g.fillStyle = '#000'; g.font = 'bold 28px Tahoma, sans-serif'; g.textAlign = 'center'; g.fillText('×', wx + ww - 41, wy + 39);
+    // cookie halves
+    const half = (cx, cy, rot, flip) => { g.save(); g.translate(cx, cy); g.rotate(rot); g.scale(flip, 1); g.beginPath(); g.rect(-190, -130, 190, 260); g.clip(); const r = g.createRadialGradient(-50, -40, 10, 0, 0, 200); r.addColorStop(0, '#f7d58a'); r.addColorStop(.55, '#e0a54a'); r.addColorStop(1, '#a86a22'); g.fillStyle = r; g.beginPath(); g.ellipse(0, 0, 180, 118, 0, 0, Math.PI * 2); g.fill(); g.restore(); };
+    half(W / 2 - 110, wy + 260, -0.45, 1); half(W / 2 + 110, wy + 260, 0.45, -1);
+    // slip with wrapped fortune
+    const text = this.state.fortune || '';
+    let size = 54, lines = [];
+    const maxW = ww - 200;
+    for (; size >= 34; size -= 4) {
+      g.font = 'italic ' + size + 'px Georgia, serif'; lines = []; let line = '';
+      text.split(' ').forEach(w => { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+      if (line) lines.push(line);
+      if (lines.length <= 4) break;
+    }
+    const lh = size * 1.35, sh = lines.length * lh + 90, sy = wy + 400;
+    g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(wx + 56, sy + 6, ww - 100, sh);
+    g.fillStyle = '#fbf6ea'; g.fillRect(wx + 50, sy, ww - 100, sh); g.strokeStyle = '#bcae92'; g.lineWidth = 3; g.strokeRect(wx + 50, sy, ww - 100, sh);
+    g.fillStyle = '#2b2b2b'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    lines.forEach((l, i) => g.fillText(l, W / 2, sy + 45 + lh / 2 + i * lh));
+    g.font = '30px Tahoma, Verdana, sans-serif'; g.fillStyle = '#3d3a35'; g.fillText(this.state.lucky || '', W / 2, sy + sh + 60);
+    // call to action
+    g.font = "30px Tahoma, Verdana, sans-serif"; g.fillStyle = '#111'; g.fillText('crack open your own at', W / 2, wy + wh - 150);
+    g.font = "84px 'Alfa Slab One', Georgia, serif"; g.fillStyle = '#2b2b2b'; g.fillText('dmozus.com', W / 2, wy + wh - 80);
+    // taskbar
+    g.fillStyle = '#d6d0c4'; g.fillRect(0, H - 84, W, 84); g.fillStyle = '#f4f1ea'; g.fillRect(0, H - 84, W, 4);
+    bevel(12, H - 72, 150, 60, 4, '#fff', '#3d3a35', '#d6d0c4'); g.fillStyle = '#111'; g.font = 'bold 30px Tahoma, sans-serif'; g.fillText('Start', 87, H - 41);
+    bevel(174, H - 70, W - 174 - 140, 56, 2, '#8a857c', '#fff', '#d6d0c4'); g.textAlign = 'left'; g.font = '28px Tahoma, sans-serif'; g.fillText('dmozus.com', 194, H - 41);
+    bevel(W - 128, H - 70, 116, 56, 2, '#8a857c', '#fff', '#d6d0c4'); g.textAlign = 'center'; g.font = 'bold 28px Tahoma, sans-serif'; g.fillText('3:14', W - 70, H - 41);
+    return new Promise(res => c.toBlob(res, 'image/png'));
+  }
+  async saveFortune() {
+    const blob = await this.fortuneBlob(); if (!blob) return;
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-fortune-dmozus.png';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  async shareFortune() {
+    const blob = await this.fortuneBlob(); if (!blob) return;
+    const file = new File([blob], 'my-fortune-dmozus.png', { type: 'image/png' });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text: 'My fortune from dmozus.com' });
+      else if (navigator.share) await navigator.share({ title: 'My fortune from dmozus.com', text: '“' + this.state.fortune + '”', url: 'https://dmozus.com/#fortune' });
+      else this.saveFortune();
+    } catch (e) { if (e && e.name !== 'AbortError') this.saveFortune(); }
+  }
   openArt(a) {
     const im = new Image();
     im.onload = () => { const k = Math.min((window.innerWidth - 72) / im.naturalWidth, (window.innerHeight - 110) / im.naturalHeight); this.setState({ zoom: false, lightbox: { title: a.title, src: a.src, w: Math.round(im.naturalWidth * k), h: Math.round(im.naturalHeight * k) } }); };
@@ -634,6 +699,10 @@ class Component extends DCLogic {
       slipOpacity: this.state.cracked ? 1 : 0,
       slipTransform: this.state.cracked ? 'translateY(40px) scale(1)' : 'translateY(0) scale(.3)',
       fortune: this.state.fortune,
+      cracked: !!this.state.cracked,
+      canShare: typeof navigator !== 'undefined' && !!navigator.share && !!navigator.canShare,
+      shareFortune: () => this.shareFortune(),
+      saveFortune: () => this.saveFortune(),
       luckyNumbers: this.state.cracked ? this.state.lucky : '',
       lightboxOpen: !!this.state.lightbox,
       lightboxTitle: this.state.lightbox ? this.state.lightbox.title : '',
