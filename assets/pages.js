@@ -5,7 +5,7 @@ document.querySelectorAll('form[data-inquire]').forEach(function (f) {
     var body = {
       name: f.elements.name.value,
       email: f.elements.email.value,
-      message: 'About the original: ' + f.dataset.piece + '\n\n' + f.elements.message.value
+      message: f.elements.message.value + '\n\n(Sent from the page for ' + f.dataset.piece + ')'
     };
     btn.disabled = true; note.textContent = 'sending...';
     fetch(f.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
