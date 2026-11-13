@@ -64,3 +64,16 @@ body{padding:12px 10px 60px}
 .photos img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border:1px solid #3d3a35;box-shadow:2px 2px 0 #3d3a35}
 .photos figcaption{margin-top:6px;font-size:12px;color:#3d3a35}
 @media (max-width:700px){.shown{padding:12px}.photos{grid-template-columns:minmax(0,1fr)}}
+
+.inquire{margin-top:16px;padding-top:14px;border-top:1px dashed #8a857c}
+.inquire summary{display:flex;flex-wrap:wrap;align-items:center;gap:10px;cursor:pointer;list-style:none}
+.inquire summary::-webkit-details-marker{display:none}
+.tag{padding:3px 8px;background:#1c7676;color:#fff;font:bold 12px Tahoma,sans-serif;letter-spacing:.5px;text-transform:uppercase}
+.inquire[open] summary .btn{border-color:#3d3a35 #fff #fff #3d3a35}
+.inquire p{margin:12px 0 10px;font-size:14px}
+.inquire form{display:flex;flex-direction:column;gap:8px}
+.inquire label{display:flex;flex-direction:column;gap:3px;font-size:12px}
+.inquire input,.inquire textarea{width:100%;padding:6px 8px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;outline:1px solid #3d3a35;font:16px Tahoma,Verdana,sans-serif;color:#111;resize:vertical}
+.inquire .hp{position:absolute;left:-9999px;width:1px;height:1px}
+.inquire button{align-self:flex-start;cursor:pointer;font-weight:bold}
+.inquire .note{margin:0;min-height:18px;font-size:13px;color:#0b2a6f}
