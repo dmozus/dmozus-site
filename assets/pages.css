@@ -77,3 +77,22 @@ body{padding:12px 10px 60px}
 .inquire .hp{position:absolute;left:-9999px;width:1px;height:1px}
 .inquire button{align-self:flex-start;cursor:pointer;font-weight:bold}
 .inquire .note{margin:0;min-height:18px;font-size:13px;color:#0b2a6f}
+
+.tee .frame img{aspect-ratio:1/1;object-fit:cover;width:100%;max-height:none;background:#fff}
+.buy-form{display:flex;flex-direction:column;gap:12px;margin:6px 0 12px}
+.buy-form fieldset{margin:0;padding:0;border:0;min-width:0}
+.buy-form legend{padding:0;margin-bottom:6px;font-size:13px;font-weight:bold}
+.buy-form legend span{font-weight:normal}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:5px 11px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:13px Tahoma,Verdana,sans-serif;color:#111;cursor:pointer}
+.chip[aria-pressed="true"]{background:#0b2a6f;color:#fff;border-color:#3d3a35 #fff #fff #3d3a35;box-shadow:none}
+.chip .dot{width:14px;height:14px;border:1px solid #3d3a35;flex:none}
+.price{margin:0;font:26px/1 'Alfa Slab One',serif;color:#2b2b2b;min-height:26px}
+.buy-form .actions{margin-top:0}
+.buy-form button.buy{cursor:pointer;padding:9px 26px}
+.buy-form button.buy:disabled{opacity:.6;cursor:default}
+.buy-form .note{margin:0;min-height:18px;font-size:13px;color:#0b2a6f}
+.care{margin-top:10px;font-size:13px}
+.care summary{cursor:pointer;font-weight:bold}
+.care ul{margin:8px 0 0;padding-left:18px}
+.care li{margin-bottom:4px}
