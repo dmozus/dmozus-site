@@ -52,6 +52,7 @@
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
     var v = current(); if (!v) return;
+    try { if (window.umami) window.umami.track('Buy now clicked', { color: pick.Color, size: pick.Size }); } catch (e) {}
     $('buy').disabled = true; note.textContent = 'Opening secure checkout...';
     api('mutation($lines: [CartLineInput!]!) { cartCreate(input: { lines: $lines }) { cart { checkoutUrl } userErrors { message } } }', { lines: [{ merchandiseId: v.id, quantity: 1 }] })
       .then(function (d) {

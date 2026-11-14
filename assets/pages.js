@@ -9,7 +9,7 @@ document.querySelectorAll('form[data-inquire]').forEach(function (f) {
     };
     btn.disabled = true; note.textContent = 'sending...';
     fetch(f.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
-      .then(function (r) { if (!r.ok) throw 0; f.reset(); note.textContent = 'Sent! I will write back soon.'; })
+      .then(function (r) { if (!r.ok) throw 0; try { if (window.umami) window.umami.track('Original inquiry sent', { piece: f.dataset.piece }); } catch (e) {} f.reset(); note.textContent = 'Sent! I will write back soon.'; })
       .catch(function () { note.textContent = 'Could not send. Please try again.'; })
       .then(function () { btn.disabled = false; });
   });

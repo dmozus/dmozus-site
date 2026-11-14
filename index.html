@@ -22,6 +22,7 @@
 <meta name="twitter:description" content="Analog collages made from vintage ephemera by Houston artist Diana (dmozus).">
 <meta name="twitter:image" content="https://dmozus.com/art/the-past-is-calling.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://dmozus.com/#diana","name":"Diana","alternateName":"dmozus","jobTitle":"Collage Artist","description":"Analog collage artist working with vintage ephemera.","address":{"@type":"PostalAddress","addressLocality":"Houston","addressRegion":"TX","addressCountry":"US"},"url":"https://dmozus.com/","image":"https://dmozus.com/assets/dmozus-portrait.png","sameAs":["https://www.instagram.com/dmozus/","https://www.youtube.com/@dmozus"] },{"@type":"WebSite","@id":"https://dmozus.com/#site","url":"https://dmozus.com/","name":"dmozus","description":"Analog collage art by Diana (dmozus), Houston, Texas.","publisher":{"@id":"https://dmozus.com/#diana"}},{"@type":"VisualArtwork","name":"Story of Apathy","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/apathy.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"What More Can I Say","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/what-more-can-i-say.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"The Past Is Calling","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/the-past-is-calling.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"Don't Just Dream About the Good Life","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/dont-just-dream-about.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"Does Your Life Work for You?","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/does-your-life.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"I Wanted To Do Mundane Things With You","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/mundane.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2025"},{"@type":"VisualArtwork","name":"Christmas","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/christmas-2024.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2024"}]}</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="2beb98ae-94d9-4f01-a27f-6d85bdcf0d5c"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -94,7 +95,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </sc-if>
 </div>
 </div>
-<a href="{{ shopUrl }}" style="display:block;text-align:center;padding:10px;background:#c9423a;color:#fff;font:18px 'Bungee',sans-serif;letter-spacing:1px;text-decoration:none;border:2px solid;border-color:#f08a80 #5a1510 #5a1510 #f08a80;box-shadow:1px 1px 0 #000">Shop Now</a>
+<a href="{{ shopUrl }}" data-umami-event="Shop Now clicked" style="display:block;text-align:center;padding:10px;background:#c9423a;color:#fff;font:18px 'Bungee',sans-serif;letter-spacing:1px;text-decoration:none;border:2px solid;border-color:#f08a80 #5a1510 #5a1510 #f08a80;box-shadow:1px 1px 0 #000">Shop Now</a>
 </div>
 </div>
 
@@ -348,7 +349,7 @@ Make yourself at home. Poke around, get your fortune told, and put on my collage
 <a href="#orb" onClick="{{ closeStart }}" style="padding:9px 12px;font:13px Tahoma;color:#111;text-decoration:none" style-hover="background:#0b2a6f;color:#fff">Ask the Oracle</a>
 <a href="https://www.instagram.com/dmozus/" target="_blank" style="padding:9px 12px;font:13px Tahoma;color:#111;text-decoration:none" style-hover="background:#0b2a6f;color:#fff">Instagram</a>
 <div style="margin:3px 6px;border-top:1px solid #8a857c;border-bottom:1px solid #fff"></div>
-<a href="{{ shopUrl }}" style="padding:9px 12px;font:bold 13px Tahoma;color:#111;text-decoration:none" style-hover="background:#0b2a6f;color:#fff">Shop Now</a>
+<a href="{{ shopUrl }}" data-umami-event="Shop Now clicked" style="padding:9px 12px;font:bold 13px Tahoma;color:#111;text-decoration:none" style-hover="background:#0b2a6f;color:#fff">Shop Now</a>
 </div>
 </div>
 </sc-if>
@@ -560,13 +561,16 @@ class Component extends DCLogic {
     bevel(W - 128, H - 70, 116, 56, 2, '#8a857c', '#fff', '#d6d0c4'); g.textAlign = 'center'; g.font = 'bold 28px Tahoma, sans-serif'; g.fillText('3:14', W - 70, H - 41);
     return new Promise(res => c.toBlob(res, 'image/png'));
   }
+  track = (n, d) => { try { if (window.umami) window.umami.track(n, d); } catch (e) {} };
   async saveFortune() {
     const blob = await this.fortuneBlob(); if (!blob) return;
+    this.track('Fortune saved');
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-fortune-dmozus.png';
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }
   async shareFortune() {
     const blob = await this.fortuneBlob(); if (!blob) return;
+    this.track('Fortune shared');
     const file = new File([blob], 'my-fortune-dmozus.png', { type: 'image/png' });
     try {
       if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text: 'My fortune from dmozus.com' });
@@ -575,6 +579,7 @@ class Component extends DCLogic {
     } catch (e) { if (e && e.name !== 'AbortError') this.saveFortune(); }
   }
   openArt(a) {
+    this.track('Image opened', { title: a.title });
     const im = new Image();
     im.onload = () => { const k = Math.min((window.innerWidth - 72) / im.naturalWidth, (window.innerHeight - 110) / im.naturalHeight); this.setState({ zoom: false, lightbox: { title: a.title, src: a.src, w: Math.round(im.naturalWidth * k), h: Math.round(im.naturalHeight * k) } }); };
     im.src = a.src;
@@ -594,6 +599,7 @@ class Component extends DCLogic {
   componentWillUnmount() { document.removeEventListener('contextmenu', this.noSave); document.removeEventListener('dragstart', this.noSave); window.removeEventListener('resize', this.onResize); clearTimeout(this.playT); clearTimeout(this.askT); if (this.sp && this.sp.destroy) this.sp.destroy(); }
   go(d, play) { const n = this.state.tracks.length; if (n) this.playTrack((this.state.track + d + n) % n, play === undefined ? !this.state.spPaused : play); }
   ask = () => {
+    this.track('Oracle asked');
     if (this.state.asking) return;
     if (!this.state.question.trim()) { this.setState({ answer: 'type a question first' }); return; }
     this.setState({ asking: true, answerVisible: false });
@@ -619,6 +625,7 @@ class Component extends DCLogic {
       } else if ((this.props.contactEmail || '')) {
         window.open('mailto:' + (this.props.contactEmail || '') + '?subject=' + encodeURIComponent('Message from ' + (msgName || 'your website')) + '&body=' + encodeURIComponent(msgBody + '\n\n— ' + msgName + ' ' + msgEmail));
       }
+      this.track('Message sent');
       this.setState({ sent: true, msgError: '', msgName: '', msgEmail: '', msgBody: '' });
     } catch (e) { this.setState({ msgError: 'could not send — try again' }); }
   }
@@ -667,7 +674,7 @@ class Component extends DCLogic {
         ...t, num: i + 1, durLabel: this.fmt(t.dur / 1000),
         bg: i === track ? '#0b2a6f' : '#fff',
         color: i === track ? '#fff' : '#111',
-        select: () => this.playTrack(i, true)
+        select: () => { this.track('Song played', { song: t.title }); this.playTrack(i, true); }
       })),
       orbRef: this.orbRef,
       question: this.state.question,
@@ -692,7 +699,7 @@ class Component extends DCLogic {
       resetMsg: () => this.setState({ sent: false }),
       sendMsg: () => this.sendMsg(),
       visitorDigits: String(this.state.visitors || 0).padStart(6, '0').split('').map(n => ({ n })),
-      crackCookie: () => this.setState(s => s.cracked ? { cracked: false } : { cracked: true, fortune: this.draw('fortune', this.fortunes), lucky: 'lucky numbers: 3 · 14 · ' + Array.from({ length: 3 }, () => 1 + Math.floor(Math.random() * 60)).join(' · ') }),
+      crackCookie: () => { if (!this.state.cracked) this.track('Fortune cracked'); this.setState(s => s.cracked ? { cracked: false } : { cracked: true, fortune: this.draw('fortune', this.fortunes), lucky: 'lucky numbers: 3 · 14 · ' + Array.from({ length: 3 }, () => 1 + Math.floor(Math.random() * 60)).join(' · ') }); },
       cookieLabel: this.state.cracked ? 'Get another cookie' : 'Crack it open',
       leftHalf: this.state.cracked ? 'translate(-38px,18px) rotate(-28deg)' : 'none',
       rightHalf: this.state.cracked ? 'translate(38px,18px) rotate(28deg)' : 'none',
