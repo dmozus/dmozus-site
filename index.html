@@ -319,6 +319,35 @@ Make yourself at home. Poke around, get your fortune told, and put on my collage
 </div>
 </sc-if>
 </div>
+
+<sc-if value="{{ gbOn }}" hint-placeholder-val="{{ false }}">
+<div id="guestbook" style="order:5;flex:{{ msgFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>dmozus_guestbook : Instant Message</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
+<div style="display:flex;gap:14px;padding:3px 8px;font:12px Tahoma;color:#111;border-bottom:1px solid #8a857c"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>I</u>nsert</span><span><u>P</u>eople</span></div>
+<div style="padding:8px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;font:12px Tahoma;color:#2b2b2b"><span style="width:10px;height:10px;border-radius:50%;background:#e8a33a;border:1px solid #7a4a12;flex:none"></span><span>dmozus is away. Leave a note and it shows up here once she reads it.</span></div>
+<div role="log" aria-label="Guestbook messages" style="height:210px;overflow-y:auto;box-sizing:border-box;padding:8px 10px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:14px/1.45 'Times New Roman',Times,serif;color:#111;display:flex;flex-direction:column;gap:6px">
+<sc-if value="{{ gbEmpty }}" hint-placeholder-val="{{ false }}"><div style="color:#6b665d;font-style:italic">No messages yet. Be the first to say hi.</div></sc-if>
+<sc-for list="{{ gbMessages }}" as="m" hint-placeholder-count="2">
+<div style="overflow-wrap:anywhere;opacity:{{ m.opacity }}">
+<div><b style="color:#0a23c4">{{ m.name }}</b><span style="font:11px Tahoma;color:#6b665d;margin-left:4px">{{ m.when }}</span><b style="color:#0a23c4">:</b> {{ m.text }}</div>
+<sc-if value="{{ m.hasReply }}" hint-placeholder-val="{{ false }}"><div style="margin-left:14px"><b style="color:#c9201a">dmozus:</b> {{ m.reply }}</div></sc-if>
+<sc-if value="{{ m.pending }}" hint-placeholder-val="{{ false }}"><div style="font:italic 11px Tahoma;color:#6b665d">sent. waiting for dmozus to sign on...</div></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font:12px Tahoma;color:#111">
+<span>You are:</span><b style="color:#0a23c4;overflow-wrap:anywhere">{{ gbName }}</b>
+<button onClick="{{ gbReroll }}" style="padding:5px 12px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">New name</button>
+</div>
+<textarea value="{{ gbText }}" onChange="{{ onGbText }}" onKeyDown="{{ onGbKey }}" maxlength="240" rows="3" aria-label="Your message" placeholder="type a message..." style="box-sizing:border-box;width:100%;padding:6px 8px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c;font:{{ fieldFont }};resize:vertical;outline:none"></textarea>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font:12px Tahoma">
+<span style="color:{{ gbStatusColor }}" role="status">{{ gbStatus }}</span>
+<button onClick="{{ gbSend }}" style="padding:6px 22px;background:#d6d0c4;border:2px solid;border-color:#fff #3d3a35 #3d3a35 #fff;box-shadow:inset -1px -1px 0 #8a857c;font:bold 12px Tahoma;cursor:pointer;color:#111" style-active="border-color:#3d3a35 #fff #fff #3d3a35">Send</button>
+</div>
+</div>
+</div>
+</sc-if>
 </div>
 </div>
 </div>
@@ -561,6 +590,51 @@ class Component extends DCLogic {
     bevel(W - 128, H - 70, 116, 56, 2, '#8a857c', '#fff', '#d6d0c4'); g.textAlign = 'center'; g.font = 'bold 28px Tahoma, sans-serif'; g.fillText('3:14', W - 70, H - 41);
     return new Promise(res => c.toBlob(res, 'image/png'));
   }
+  // Guestbook: an AIM-style comment box. Messages are stored in a small database and only shown after approval.
+  GB = { project: '', key: '' };
+  gbBase() { return 'https://firestore.googleapis.com/v1/projects/' + this.GB.project + '/databases/(default)/documents'; }
+  gbNewName() {
+    const adj = ['glue', 'paper', 'vintage', 'retro', 'dreamy', 'fuzzy', 'cosmic', 'lil', 'sleepy', 'groovy', 'analog', 'lucky', 'velvet', 'neon', 'dusty', 'scissor'];
+    const noun = ['scraps', 'collage', 'magazine', 'sticker', 'postcard', 'cutout', 'zine', 'gal', 'kid', 'ghost', 'goldfish', 'cookie', 'oracle', 'daydream', 'stamp'];
+    const r = a => a[Math.floor(Math.random() * a.length)], n = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+    const a = r(adj), b = r(noun);
+    return r([a + '_' + b + n, 'xX_' + a + b + '_Xx', b + '_' + a + '_' + n, 'the_' + a + '_' + b, a + b + '314']).slice(0, 24);
+  }
+  gbLoad() {
+    if (!this.GB.project) return;
+    let name = '', pending = [];
+    try { name = localStorage.getItem('dmozus-gb-name') || ''; pending = JSON.parse(localStorage.getItem('dmozus-gb-pending') || '[]'); } catch (e) {}
+    if (!name) { name = this.gbNewName(); try { localStorage.setItem('dmozus-gb-name', name); } catch (e) {} }
+    this.setState({ gbName: name, gbPending: Array.isArray(pending) ? pending : [] });
+    fetch(this.gbBase() + ':runQuery?key=' + this.GB.key, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'guestbook' }], where: { fieldFilter: { field: { fieldPath: 'approved' }, op: 'EQUAL', value: { booleanValue: true } } }, limit: 200 } }) })
+      .then(r => r.json()).then(rows => {
+        const list = (Array.isArray(rows) ? rows : []).filter(x => x.document).map(x => { const f = x.document.fields || {}; return { id: x.document.name, name: (f.name || {}).stringValue || 'anonymous', text: (f.text || {}).stringValue || '', at: (f.createdAt || {}).timestampValue || '', reply: (f.reply || {}).stringValue || '' }; });
+        list.sort((a, b) => a.at < b.at ? -1 : 1);
+        this.setState(st => ({ gb: list, gbLoaded: true, gbPending: (st.gbPending || []).filter(p => !list.some(m => m.name === p.name && m.text === p.text)) }), () => { try { localStorage.setItem('dmozus-gb-pending', JSON.stringify(this.state.gbPending)); } catch (e) {} });
+      }).catch(() => this.setState({ gbLoaded: true }));
+  }
+  gbSend() {
+    const text = (this.state.gbText || '').trim().replace(/\s+/g, ' ');
+    const say = (m, bad) => this.setState({ gbStatus: m, gbBad: !!bad });
+    if (!text) return say('type something first', true);
+    if (text.length > 240) return say('keep it under 240 characters', true);
+    if (/https?:|www\.|\.com\b|\.net\b|\.ru\b/i.test(text)) return say('no links, please', true);
+    if (/\b(f+u+c+k+|sh+i+t+|b+i+t+c+h+|c+u+n+t+|a+s+s+h+o+l+e+|n+i+g+g+|f+a+g+g*o*t*|r+e+t+a+r+d+|wh+o+r+e+|sl+u+t+)/i.test(text)) return say('be nice. try that again.', true);
+    let last = 0; try { last = Number(localStorage.getItem('dmozus-gb-last') || 0); } catch (e) {}
+    if (Date.now() - last < 30000) return say('slow down a sec, then send again', true);
+    if (this.gbBusy) return;
+    this.gbBusy = true; say('sending...');
+    const now = new Date().toISOString(), name = this.state.gbName;
+    fetch(this.gbBase() + '/guestbook?key=' + this.GB.key, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { name: { stringValue: name }, text: { stringValue: text }, approved: { booleanValue: false }, createdAt: { timestampValue: now } } }) })
+      .then(r => { if (!r.ok) throw new Error(); 
+        this.track('Guestbook message sent');
+        try { localStorage.setItem('dmozus-gb-last', String(Date.now())); } catch (e) {}
+        this.setState(st => ({ gbText: '', gbStatus: 'sent!', gbBad: false, gbPending: (st.gbPending || []).concat([{ name: name, text: text, at: now }]).slice(-5) }), () => { try { localStorage.setItem('dmozus-gb-pending', JSON.stringify(this.state.gbPending)); } catch (e) {} });
+      })
+      .catch(() => say('could not send. try again.', true))
+      .then(() => { this.gbBusy = false; });
+  }
+  gbWhen(at) { const d = new Date(at); return isNaN(d) ? '' : '(' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ')'; }
   track = (n, d) => { try { if (window.umami) window.umami.track(n, d); } catch (e) {} };
   async saveFortune() {
     const blob = await this.fortuneBlob(); if (!blob) return;
@@ -585,6 +659,7 @@ class Component extends DCLogic {
     im.src = a.src;
   }
   componentDidMount() {
+    this.gbLoad();
     this.noSave = e => { const t = e.target; if (t && t.closest && (t.tagName === 'IMG' || t.closest('#art') || t.closest('#flipbook') || t.closest('[data-lightbox]'))) e.preventDefault(); };
     document.addEventListener('contextmenu', this.noSave);
     document.addEventListener('dragstart', this.noSave);
@@ -692,6 +767,17 @@ class Component extends DCLogic {
       hasMoreArt: this.state.art.length > this.state.artShown,
       loadMoreArt: () => this.setState(s => ({ artShown: s.artShown + 9 })),
       msgName: this.state.msgName, msgEmail: this.state.msgEmail, msgBody: this.state.msgBody, msgError: this.state.msgError,
+      gbOn: !!this.GB.project,
+      gbName: this.state.gbName || '',
+      gbText: this.state.gbText || '',
+      gbStatus: this.state.gbStatus || '',
+      gbStatusColor: this.state.gbBad ? '#b3261e' : '#0b2a6f',
+      onGbText: e => this.setState({ gbText: e.target.value.slice(0, 240), gbStatus: '' }),
+      onGbKey: e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.gbSend(); } },
+      gbSend: () => this.gbSend(),
+      gbReroll: () => { const n = this.gbNewName(); try { localStorage.setItem('dmozus-gb-name', n); } catch (e) {} this.setState({ gbName: n }); },
+      gbMessages: (this.state.gb || []).map(m => ({ name: m.name, text: m.text, when: this.gbWhen(m.at), reply: m.reply, hasReply: !!m.reply, pending: false, opacity: 1 })).concat((this.state.gbPending || []).map(m => ({ name: m.name, text: m.text, when: '', reply: '', hasReply: false, pending: true, opacity: 0.7 }))),
+      gbEmpty: !!this.state.gbLoaded && !(this.state.gb || []).length && !(this.state.gbPending || []).length,
       sent: this.state.sent, notSent: !this.state.sent,
       onMsgName: e => this.setState({ msgName: e.target.value }),
       onMsgEmail: e => this.setState({ msgEmail: e.target.value }),
