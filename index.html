@@ -99,7 +99,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 
-<div style="order:3;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="penpals" style="order:{{ oPals }};background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>Pen Pals &amp; Paper Trails</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="padding:10px;display:flex;flex-direction:column;gap:10px">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -120,7 +120,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 
-<div id="playlist" style="order:3;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="playlist" style="order:{{ oSide }};background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>314 Media Player</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="padding:10px;display:flex;flex-direction:column;gap:10px">
 <div style="background:#050805;border:2px solid;border-color:#8a857c #fff #fff #8a857c;padding:10px 12px;font-family:'VT323',monospace;color:#7cff6b;text-shadow:0 0 4px rgba(124,255,107,.6)">
@@ -150,7 +150,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 
-<div id="orb" style="order:3;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="orb" style="order:{{ oSide }};background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>oracle.exe</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:14px">
 <div ref="{{ orbRef }}" onClick="{{ ask }}" style="position:relative;width:180px;height:180px;border-radius:50%;cursor:pointer;background:radial-gradient(circle at 34% 28%,#8a8a8a 0%,#2a2a2a 25%,#000 70%);box-shadow:4px 6px 0 rgba(0,0,0,.35)">
@@ -169,7 +169,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 
-<div id="fortune" style="order:3;flex:{{ fillFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="fortune" style="order:{{ oSide }};flex:{{ fillFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>fortune_cookie.exe</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="flex:1;padding:16px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
 <div onClick="{{ crackCookie }}" style="position:relative;width:240px;height:150px;cursor:pointer">
@@ -233,7 +233,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 
-<div id="art" style="order:2;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="art" style="order:{{ oArt }};background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>My Art</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;font-size:12px">
 <span>Address</span>
@@ -258,7 +258,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 </div>
 
-<div id="flipbook" style="order:2;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="flipbook" style="order:{{ oArt }};background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>vintage_ads.exe</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="margin:4px;padding:22px 14px 16px;background:#2f7f86;border:2px solid;border-color:#8a857c #fff #fff #8a857c;display:flex;flex-direction:column;align-items:center;gap:14px">
 <div style="position:relative;width:100%;max-width:560px;aspect-ratio:560/380;perspective:1800px">
@@ -285,7 +285,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 
 </section>
 
-<div id="message" style="order:4;flex:{{ msgFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="message" style="order:{{ oMsg }};flex:{{ msgFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>New Message</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
 <div style="padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;font-size:13px">
@@ -315,7 +315,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </div>
 
 <sc-if value="{{ gbOn }}" hint-placeholder-val="{{ false }}">
-<div id="guestbook" style="order:5;flex:{{ msgFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
+<div id="guestbook" style="order:{{ oGb }};flex:{{ msgFlex }};display:flex;flex-direction:column;background:#d6d0c4;border:2px solid;border-color:#f4f1ea #3d3a35 #3d3a35 #f4f1ea;box-shadow:2px 2px 0 #000,inset -1px -1px 0 #8a857c;padding:3px">
 <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#0b2a6f,#6d95c9);color:#fff;font:bold 13px Tahoma,sans-serif"><span>dmozus_guestbook : Instant Message</span><span style="width:16px;height:14px;background:#d6d0c4;color:#000;font:bold 11px/13px Tahoma;text-align:center;border:1px solid;border-color:#fff #3d3a35 #3d3a35 #fff">×</span></div>
 <div style="display:flex;gap:14px;padding:3px 8px;font:12px Tahoma;color:#111;border-bottom:1px solid #8a857c"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>I</u>nsert</span><span><u>P</u>eople</span></div>
 <div style="padding:8px;display:flex;flex-direction:column;gap:8px">
@@ -817,6 +817,8 @@ class Component extends DCLogic {
       artGap: narrow ? '14px 10px' : '16px',
       rowAlign: 'stretch',
       colDisplay: this.state.narrow ? 'contents' : 'flex',
+      // window order: unchanged on desktop; on phones Pen Pals sits just above My Art
+      oPals: 3, oArt: this.state.narrow ? 4 : 2, oSide: this.state.narrow ? 5 : 3, oMsg: this.state.narrow ? 6 : 4, oGb: this.state.narrow ? 7 : 5,
       navDir: this.state.narrow ? 'row' : 'column',
       navFlex: this.state.narrow ? '1 1 100%' : '0 0 88px',
       leaves, pageLabel,
