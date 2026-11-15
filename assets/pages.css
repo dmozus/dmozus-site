@@ -25,6 +25,9 @@ main{max-width:900px;margin:0 auto}
 .pager .btn{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .address{display:flex;align-items:center;gap:8px;padding:6px 5px;font-size:12px}
+.address .home{flex:none;padding:3px 12px;font-size:12px;font-weight:bold}
+.address div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:480px){.address span{display:none}}
 .address div{flex:1;min-width:0;padding:2px 6px;background:#fff;border:2px solid;border-color:#8a857c #fff #fff #8a857c}
 .intro{margin:0 5px;padding:14px 16px 4px;background:#fff;border:2px solid;border-color:#8a857c #fff transparent #8a857c;border-bottom:none}
 .intro h1{margin:0 0 4px;font:24px/1.15 'Alfa Slab One',serif;color:#2b2b2b}
