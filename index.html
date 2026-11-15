@@ -600,7 +600,7 @@ class Component extends DCLogic {
     const noun = ['scraps', 'collage', 'magazine', 'sticker', 'postcard', 'cutout', 'zine', 'gal', 'kid', 'ghost', 'goldfish', 'cookie', 'oracle', 'daydream', 'stamp'];
     const r = a => a[Math.floor(Math.random() * a.length)], n = String(Math.floor(Math.random() * 100)).padStart(2, '0');
     const a = r(adj), b = r(noun);
-    return r([a + '_' + b + n, 'xX_' + a + b + '_Xx', b + '_' + a + '_' + n, 'the_' + a + '_' + b, a + b + '314']).slice(0, 24);
+    return r([a + '_' + b + n, 'xX_' + a + b + '_Xx', b + '_' + a + '_' + n, 'the_' + a + '_' + b, a + b + n]).slice(0, 24);
   }
   gbLoad() {
     if (!this.GB.project) return;
@@ -637,6 +637,13 @@ class Component extends DCLogic {
       .then(() => { this.gbBusy = false; });
   }
   gbWhen(at) { const d = new Date(at); return isNaN(d) ? '' : '(' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ')'; }
+  // five different numbers from 1 to 60, drawn with the browser's secure random source
+  luckyNumbers() {
+    const rand = max => { try { const a = new Uint32Array(1); let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= Math.floor(4294967296 / max) * max); return x % max; } catch (e) { return Math.floor(Math.random() * max); } };
+    const picked = [];
+    while (picked.length < 5) { const n = 1 + rand(60); if (picked.indexOf(n) < 0) picked.push(n); }
+    return picked;
+  }
   track = (n, d) => { try { if (window.umami) window.umami.track(n, d); } catch (e) {} };
   async saveFortune() {
     const blob = await this.fortuneBlob(); if (!blob) return;
@@ -787,7 +794,7 @@ class Component extends DCLogic {
       resetMsg: () => this.setState({ sent: false }),
       sendMsg: () => this.sendMsg(),
       visitorDigits: String(this.state.visitors || 0).padStart(6, '0').split('').map(n => ({ n })),
-      crackCookie: () => { if (!this.state.cracked) this.track('Fortune cracked'); this.setState(s => s.cracked ? { cracked: false } : { cracked: true, fortune: this.draw('fortune', this.fortunes), lucky: 'lucky numbers: 3 · 14 · ' + Array.from({ length: 3 }, () => 1 + Math.floor(Math.random() * 60)).join(' · ') }); },
+      crackCookie: () => { if (!this.state.cracked) this.track('Fortune cracked'); this.setState(s => s.cracked ? { cracked: false } : { cracked: true, fortune: this.draw('fortune', this.fortunes), lucky: 'lucky numbers: ' + this.luckyNumbers().join(' · ') }); },
       cookieLabel: this.state.cracked ? 'Get another cookie' : 'Crack it open',
       leftHalf: this.state.cracked ? 'translate(-38px,18px) rotate(-28deg)' : 'none',
       rightHalf: this.state.cracked ? 'translate(38px,18px) rotate(28deg)' : 'none',
