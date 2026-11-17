@@ -38,6 +38,8 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
 @keyframes frA{0%,49%{opacity:1}50%,100%{opacity:0}}
 @keyframes frB{0%,49%{opacity:0}50%,100%{opacity:1}}
+@keyframes fishFlip{0%{transform:rotate(0) scale(1)}45%{transform:rotate(-200deg) scale(1.6)}100%{transform:rotate(-360deg) scale(1)}}
+@keyframes fishBubble{0%{transform:translateY(0) scale(.4);opacity:.95}100%{transform:translateY(-80px) scale(1.25);opacity:0}}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 @keyframes eq{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
@@ -465,8 +467,13 @@ class Component extends DCLogic {
   makeFish(f, i) {
     const h = React.createElement, p = Math.max(3, Math.round(f.size / 9));
     const frame = (k) => h('div', { style: { position: 'absolute', left: 0, top: 0, width: p, height: p, boxShadow: this.sprite(f, p, this.tails[k]), animation: `fr${k ? 'B' : 'A'} .5s linear infinite` } });
+    // tapping a fish makes it flip and blow bubbles; the key change restarts the animation on every tap
+    const hit = (this.state.fishHit || {})[i];
+    const bubble = (k) => h('div', { key: 'b' + k, style: { position: 'absolute', left: p * (13 + k * 2), top: p * (2 - k), width: p * (1.4 + k * 0.5), height: p * (1.4 + k * 0.5), borderRadius: '50%', border: Math.max(1, Math.round(p / 3)) + 'px solid #e9fbff', background: 'rgba(233,251,255,.35)', opacity: 0, animation: `fishBubble ${0.7 + k * 0.2}s ease-out ${k * 0.12}s forwards` } });
     return h('div', { key: i, style: { position: 'absolute', top: f.top + '%', left: 0, animation: `swim${f.dir} ${f.dur}s linear ${f.delay}s infinite`, opacity: 0.92 } },
-      h('div', { style: { position: 'relative', width: p * 17, height: p * 10, animation: `bob ${3 + (i % 3)}s steps(4) ${-i}s infinite`, filter: 'drop-shadow(' + p + 'px ' + p + 'px 0 rgba(0,0,0,.25))' } }, frame(0), frame(1))
+      h('div', { key: 'hit' + (hit || 0), 'data-fish': i, style: { position: 'relative', animation: hit ? 'fishFlip .8s ease-out' : 'none' } },
+        h('div', { style: { position: 'relative', width: p * 17, height: p * 10, animation: `bob ${3 + (i % 3)}s steps(4) ${-i}s infinite`, filter: 'drop-shadow(' + p + 'px ' + p + 'px 0 rgba(0,0,0,.25))' } }, frame(0), frame(1)),
+        hit ? [bubble(0), bubble(1), bubble(2)] : null)
     );
   }
   fmt(n) { n = Math.max(0, Math.floor(n)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); }
@@ -623,6 +630,8 @@ class Component extends DCLogic {
     fetch(this.gbBase() + '/guestbook' + this.gbKey(), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { name: { stringValue: name }, text: { stringValue: text }, approved: { booleanValue: false }, createdAt: { timestampValue: now } } }) })
       .then(r => { if (!r.ok) throw new Error(); 
         this.track('Guestbook message sent');
+        // courtesy email so a new note doesn't sit unseen; the note itself is already saved
+        try { fetch(this.props.formEndpoint || 'https://formspree.io/f/xnpngydj', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ name: 'Guestbook: ' + name, message: 'New guestbook note from ' + name + ':\n\n' + text + '\n\nIt is waiting in your Firebase guestbook list to approve or delete.' }) }).catch(() => {}); } catch (e) {}
         try { localStorage.setItem('dmozus-gb-last', String(Date.now())); } catch (e) {}
         this.setState(st => ({ gbText: '', gbStatus: 'sent!', gbBad: false, gbPending: (st.gbPending || []).concat([{ name: name, text: text, at: now }]).slice(-5) }), () => { try { localStorage.setItem('dmozus-gb-pending', JSON.stringify(this.state.gbPending)); } catch (e) {} });
       })
@@ -661,6 +670,24 @@ class Component extends DCLogic {
     im.src = a.src;
   }
   componentDidMount() {
+    // Fish swim behind the page, so taps are caught here: only taps on empty desktop count, and only if they land on a fish.
+    this.onFishTap = e => {
+      const t = e.target;
+      if (!t || !t.closest || t.closest('a,button,input,textarea,img,[role=log]')) return;
+      // ignore taps on a window: anything with a solid background between the tap and the desktop
+      for (let n = t; n && n !== document.body && n.nodeType === 1; n = n.parentElement) { if (getComputedStyle(n).backgroundColor !== 'rgba(0, 0, 0, 0)') return; }
+      const fish = document.querySelectorAll('[data-fish]');
+      for (let k = 0; k < fish.length; k++) {
+        const r = fish[k].getBoundingClientRect(), pad = 8;
+        if (e.clientX >= r.left - pad && e.clientX <= r.right + pad && e.clientY >= r.top - pad && e.clientY <= r.bottom + pad) {
+          const i = Number(fish[k].getAttribute('data-fish'));
+          this.setState(st => ({ fishHit: Object.assign({}, st.fishHit, { [i]: Date.now() }) }));
+          this.track('Fish tapped');
+          break;
+        }
+      }
+    };
+    document.addEventListener('pointerdown', this.onFishTap);
     this.gbLoad();
     this.noSave = e => { const t = e.target; if (t && t.closest && (t.tagName === 'IMG' || t.closest('#art') || t.closest('#flipbook') || t.closest('[data-lightbox]'))) e.preventDefault(); };
     document.addEventListener('contextmenu', this.noSave);
@@ -673,7 +700,7 @@ class Component extends DCLogic {
     this.loadVisitors();
     this.loadPlayer();
   }
-  componentWillUnmount() { document.removeEventListener('contextmenu', this.noSave); document.removeEventListener('dragstart', this.noSave); window.removeEventListener('resize', this.onResize); clearTimeout(this.playT); clearTimeout(this.askT); if (this.sp && this.sp.destroy) this.sp.destroy(); }
+  componentWillUnmount() { document.removeEventListener('pointerdown', this.onFishTap); document.removeEventListener('contextmenu', this.noSave); document.removeEventListener('dragstart', this.noSave); window.removeEventListener('resize', this.onResize); clearTimeout(this.playT); clearTimeout(this.askT); if (this.sp && this.sp.destroy) this.sp.destroy(); }
   go(d, play) { const n = this.state.tracks.length; if (n) this.playTrack((this.state.track + d + n) % n, play === undefined ? !this.state.spPaused : play); }
   ask = () => {
     this.track('Oracle asked');
