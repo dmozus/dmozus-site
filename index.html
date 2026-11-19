@@ -120,7 +120,6 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 </sc-for>
 </div>
 <div style="box-sizing:border-box;width:100%;max-width:260px;margin-top:6px;padding:3px;background:#050805;border:2px solid;border-color:#8a857c #fff #fff #8a857c">{{ mapEl }}</div>
-<span style="color:#3d3a35;text-align:center">{{ mapLabel }}</span>
 <span style="margin-top:4px;padding-top:6px;border-top:1px dashed #8a857c;width:100%;max-width:260px;box-sizing:border-box;color:#3d3a35;text-align:center;font-size:10px;line-height:1.4">No cookies here. The visitor map only counts time zones, and the guestbook only shows notes I approve.</span>
 </div>
 </div>
@@ -880,7 +879,6 @@ class Component extends DCLogic {
       artGap: narrow ? '14px 10px' : '16px',
       rowAlign: 'stretch',
       mapEl: this.mapView(),
-      mapLabel: (() => { const n = (this.state.mapPlaces || []).length; return n ? 'visitors from ' + n + (n === 1 ? ' place' : ' places') + ' so far' : 'visitors from around the world'; })(),
       colDisplay: this.state.narrow ? 'contents' : 'flex',
       // window order: unchanged on desktop; on phones Pen Pals sits just above My Art
       oPals: 3, oArt: this.state.narrow ? 4 : 2, oSide: this.state.narrow ? 5 : 3, oMsg: this.state.narrow ? 6 : 4, oGb: this.state.narrow ? 7 : 5,
