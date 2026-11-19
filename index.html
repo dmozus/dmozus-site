@@ -23,6 +23,7 @@
 <meta name="twitter:image" content="https://dmozus.com/art/the-past-is-calling.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://dmozus.com/#diana","name":"Diana","alternateName":"dmozus","jobTitle":"Collage Artist","description":"Analog collage artist working with vintage ephemera.","address":{"@type":"PostalAddress","addressLocality":"Houston","addressRegion":"TX","addressCountry":"US"},"url":"https://dmozus.com/","image":"https://dmozus.com/assets/dmozus-portrait.png","sameAs":["https://www.instagram.com/dmozus/","https://www.youtube.com/@dmozus"] },{"@type":"WebSite","@id":"https://dmozus.com/#site","url":"https://dmozus.com/","name":"dmozus","description":"Analog collage art by Diana (dmozus), Houston, Texas.","publisher":{"@id":"https://dmozus.com/#diana"}},{"@type":"VisualArtwork","name":"Story of Apathy","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/apathy.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"What More Can I Say","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/what-more-can-i-say.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"The Past Is Calling","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/the-past-is-calling.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"Don't Just Dream About the Good Life","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/dont-just-dream-about.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"Does Your Life Work for You?","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/does-your-life.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2026"},{"@type":"VisualArtwork","name":"I Wanted To Do Mundane Things With You","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/mundane.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2025"},{"@type":"VisualArtwork","name":"Christmas","artform":"Collage","artMedium":"Analog collage, vintage ephemera on paper","image":"https://dmozus.com/art/christmas-2024.jpg","creator":{"@id":"https://dmozus.com/#diana"},"url":"https://dmozus.com/","dateCreated":"2024"}]}</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="2beb98ae-94d9-4f01-a27f-6d85bdcf0d5c"></script>
+<script src="assets/worldmap.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -118,6 +119,8 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 <span style="width:18px;height:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1a1a1a 50%,#0a0a0a 50%);font:24px/1 'VT323',monospace;color:#7cff6b;text-shadow:0 0 4px rgba(124,255,107,.6)">{{ d.n }}</span>
 </sc-for>
 </div>
+<div style="box-sizing:border-box;width:100%;max-width:260px;margin-top:6px;padding:3px;background:#050805;border:2px solid;border-color:#8a857c #fff #fff #8a857c">{{ mapEl }}</div>
+<span style="color:#3d3a35;text-align:center">{{ mapLabel }}</span>
 </div>
 </div>
 </div>
@@ -646,6 +649,37 @@ class Component extends DCLogic {
     while (picked.length < 5) { const n = 1 + rand(60); if (picked.indexOf(n) < 0) picked.push(n); }
     return picked;
   }
+  // Visitor map: each browser adds one visit per day to a counter for its time zone (no cookies, no IP lookup).
+  mapLoad() {
+    const M = window.DMOZUS_MAP; if (!M || !this.GB.project) return;
+    let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    if (!M.tz[tz]) tz = '';
+    this.setState({ mapMe: tz });
+    const base = this.gbBase(), list = () => fetch(base + '/visits?pageSize=300').then(r => r.json()).then(d => {
+      const places = (d.documents || []).map(x => ({ tz: ((x.fields || {}).tz || {}).stringValue || '', count: Number(((x.fields || {}).count || {}).integerValue || 0) })).filter(p => M.tz[p.tz] && p.count > 0);
+      this.setState({ mapPlaces: places });
+    }).catch(() => {});
+    const today = new Date().toISOString().slice(0, 10);
+    let seen = ''; try { seen = localStorage.getItem('dmozus-map-day') || ''; } catch (e) {}
+    if (!tz || seen === today) return list();
+    const name = 'projects/' + this.GB.project + '/databases/(default)/documents/visits/' + tz.replace(/\//g, '~');
+    fetch(base + ':commit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ writes: [{ update: { name: name, fields: { tz: { stringValue: tz } } }, updateMask: { fieldPaths: ['tz'] }, updateTransforms: [{ fieldPath: 'count', increment: { integerValue: '1' } }] }] }) })
+      .then(r => { if (r.ok) { try { localStorage.setItem('dmozus-map-day', today); } catch (e) {} } })
+      .catch(() => {}).then(list);
+  }
+  mapView() {
+    const M = window.DMOZUS_MAP; if (!M) return null;
+    const h = React.createElement, S = 3, W = M.cols * S, H = M.rows * S;
+    if (!this.mapLand) { let d = ''; M.grid.forEach((row, r) => { for (let c = 0; c < row.length; c++) if (row[c] === '#') d += 'M' + (c * S) + ' ' + (r * S) + 'h2v2h-2z'; }); this.mapLand = d; }
+    const xy = tz => { const p = M.tz[tz]; return [(p[1] + 180) / 360 * W, (M.lat0 - p[0]) / (M.lat0 - M.lat1) * H]; };
+    const label = tz => tz.split('/').pop().replace(/_/g, ' ');
+    const places = (this.state.mapPlaces || []).slice().sort((a, b) => a.count - b.count);
+    const dots = places.map(p => { const [x, y] = xy(p.tz), r = Math.min(4.5, 1.6 + Math.log2(p.count) * 0.55);
+      return h('circle', { key: p.tz, cx: x, cy: y, r: r, fill: '#7cff6b', style: { filter: 'drop-shadow(0 0 2px rgba(124,255,107,.8))' } }, h('title', null, label(p.tz) + ' time zone · ' + p.count + (p.count === 1 ? ' visit' : ' visits'))); });
+    const me = this.state.mapMe ? (() => { const [x, y] = xy(this.state.mapMe); return h('circle', { key: 'me', cx: x, cy: y, r: 5, fill: 'none', stroke: '#ffe36e', strokeWidth: 1, style: { animation: 'blink 1.2s steps(2) infinite' } }, h('title', null, 'you are here (roughly)')); })() : null;
+    return h('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'World map with a dot for each place visitors have come from', style: { display: 'block', width: '100%', height: 'auto' } },
+      h('path', { d: this.mapLand, fill: '#1f5a24' }), dots, me);
+  }
   track = (n, d) => { try { if (window.umami) window.umami.track(n, d); } catch (e) {} };
   async saveFortune() {
     const blob = await this.fortuneBlob(); if (!blob) return;
@@ -670,6 +704,7 @@ class Component extends DCLogic {
     im.src = a.src;
   }
   componentDidMount() {
+    this.mapLoad();
     // Fish swim behind the page, so taps are caught here: only taps on empty desktop count, and only if they land on a fish.
     this.onFishTap = e => {
       const t = e.target;
@@ -843,6 +878,8 @@ class Component extends DCLogic {
       artPad: narrow ? '10px' : '14px',
       artGap: narrow ? '14px 10px' : '16px',
       rowAlign: 'stretch',
+      mapEl: this.mapView(),
+      mapLabel: (() => { const n = (this.state.mapPlaces || []).length; return n ? 'visitors from ' + n + (n === 1 ? ' place' : ' places') + ' so far' : 'visitors from around the world'; })(),
       colDisplay: this.state.narrow ? 'contents' : 'flex',
       // window order: unchanged on desktop; on phones Pen Pals sits just above My Art
       oPals: 3, oArt: this.state.narrow ? 4 : 2, oSide: this.state.narrow ? 5 : 3, oMsg: this.state.narrow ? 6 : 4, oGb: this.state.narrow ? 7 : 5,
