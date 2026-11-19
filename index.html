@@ -329,7 +329,7 @@ a{color:#0b2a6f}a:hover{color:#c9423a}
 <sc-if value="{{ gbEmpty }}" hint-placeholder-val="{{ false }}"><div style="color:#6b665d;font-style:italic">No messages yet. Be the first to say hi.</div></sc-if>
 <sc-for list="{{ gbMessages }}" as="m" hint-placeholder-count="2">
 <div style="overflow-wrap:anywhere;opacity:{{ m.opacity }}">
-<div><b style="color:#0a23c4">{{ m.name }}</b><span style="font:11px Tahoma;color:#6b665d;margin-left:4px">{{ m.when }}</span><b style="color:#0a23c4">:</b> {{ m.text }}</div>
+<div><b style="color:{{ m.nameColor }}">{{ m.name }}</b><span style="font:11px Tahoma;color:#6b665d;margin-left:4px">{{ m.when }}</span><b style="color:{{ m.nameColor }}">:</b> {{ m.text }}</div>
 <sc-if value="{{ m.hasReply }}" hint-placeholder-val="{{ false }}"><div style="margin-left:14px"><b style="color:#c9201a">dmozus:</b> {{ m.reply }}</div></sc-if>
 <sc-if value="{{ m.pending }}" hint-placeholder-val="{{ false }}"><div style="font:italic 11px Tahoma;color:#6b665d">sent. waiting for dmozus to sign on...</div></sc-if>
 </div>
@@ -840,7 +840,8 @@ class Component extends DCLogic {
       onGbKey: e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.gbSend(); } },
       gbSend: () => this.gbSend(),
       gbReroll: () => { const n = this.gbNewName(); try { localStorage.setItem('dmozus-gb-name', n); } catch (e) {} this.setState({ gbName: n }); },
-      gbMessages: (this.state.gb || []).map(m => ({ name: m.name, text: m.text, when: this.gbWhen(m.at), reply: m.reply, hasReply: !!m.reply, pending: false, opacity: 1 })).concat((this.state.gbPending || []).map(m => ({ name: m.name, text: m.text, when: '', reply: '', hasReply: false, pending: true, opacity: 0.7 }))),
+      // dmozus's own notes get the same red as her replies; visitors stay blue
+      gbMessages: (this.state.gb || []).map(m => ({ name: m.name, nameColor: m.name.toLowerCase() === 'dmozus' ? '#c9201a' : '#0a23c4', text: m.text, when: this.gbWhen(m.at), reply: m.reply, hasReply: !!m.reply, pending: false, opacity: 1 })).concat((this.state.gbPending || []).map(m => ({ name: m.name, nameColor: '#0a23c4', text: m.text, when: '', reply: '', hasReply: false, pending: true, opacity: 0.7 }))),
       gbEmpty: !!this.state.gbLoaded && !(this.state.gb || []).length && !(this.state.gbPending || []).length,
       sent: this.state.sent, notSent: !this.state.sent,
       onMsgName: e => this.setState({ msgName: e.target.value }),
